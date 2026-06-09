@@ -6,25 +6,27 @@ import task2.body.Cylinder;
 import task2.figure.Square;
 import task2.figure.Trapezoid;
 import task2.figure.Triangle;
+import task2.body.Body;
+import task2.figure.Figure;
 
 public class Main {
     public static void main(String[] args) {
-        Square square = new Square(5);
+        Figure square = new Square(5);
         square.print();
 
-        Triangle triangle = new Triangle(3, 4, 5);
+        Figure triangle = new Triangle(3, 4, 5);
         triangle.print();
 
-        Trapezoid trapezoid = new Trapezoid(10, 6, 5, 5, 4);
+        Figure trapezoid = new Trapezoid(10, 6, 5, 5);
         trapezoid.print();
 
-        Cube cube = new Cube(3);
+        Body cube = new Cube(3);
         cube.print();
 
-        Cylinder cylinder = new Cylinder(2, 10);
+        Body cylinder = new Cylinder(2, 10);
         cylinder.print();
 
-        Cone cone = new Cone(3, 12);
+        Body cone = new Cone(3, 12);
         cone.print();
     }
 }

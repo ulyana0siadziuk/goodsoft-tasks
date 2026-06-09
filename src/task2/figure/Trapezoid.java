@@ -7,7 +7,7 @@ public class Trapezoid extends Figure {
     private final double side1;
     private final double side2;
 
-    public Trapezoid(double base1, double base2, double side1, double side2, double height) {
+    public Trapezoid(double base1, double base2, double side1, double side2) {
         this.base1 = base1;
         this.base2 = base2;
         this.side1 = side1;
