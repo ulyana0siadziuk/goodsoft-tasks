@@ -22,11 +22,7 @@ public class Main {
         System.out.println("2.0 + 2.5 = " + doubleCalc.add(2.0, 2.5));
         System.out.println("2.5 - 2.0 = " + doubleCalc.subtract(2.5, 2.0));
         System.out.println("5.0 / 2.5 = " + doubleCalc.divide(5.0, 2.5));
-        try {
-            System.out.println("5.0 / 0.0 = " + doubleCalc.divide(5.0, 0.0));
-        } catch (ArithmeticException e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
+        System.out.println("5.0 / 0.0 = " + doubleCalc.divide(5.0, 0.0));
 
         Calculator<String> strCalc = new StringCalculator();
         System.out.println("Сложение: " + strCalc.add("Компьютер ", "мышка"));
