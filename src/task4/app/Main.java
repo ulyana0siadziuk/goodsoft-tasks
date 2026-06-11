@@ -38,13 +38,16 @@ public class Main {
         }
 
         Item duplicate = new Item(1, "кошка");
+        System.out.println("Создан новый объект Item - duplicate (те же поля, что Item 1 кошка): " + duplicate);
+        System.out.println("Добавляем duplicate в itemSet");
         itemSet.add(duplicate);
-        System.out.println("Set Item: вывод через Iterator:");
+        System.out.println("Set Item: вывод через Iterator и проверка добавления дубликата:");
         Iterator<Item> iteratorItem = itemSet.iterator();
         while (iteratorItem.hasNext()) {
             System.out.println(iteratorItem.next());
         }
         System.out.println("Размер: " + itemSet.size());
+        System.out.println("Размер не изменился, т.к. Set не допускает дубликатов.");
 
         List<String> list = new ArrayList<>();
         list.add("карандаш");
