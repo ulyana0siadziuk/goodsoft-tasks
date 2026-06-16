@@ -63,7 +63,7 @@ public class WebDispatcherServlet extends HttpServlet {
                 req.getSession().setAttribute(CommonConstant.USER_INFO_KEY, userInfo);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             } else {
-                req.setAttribute("errorMessage", "Error login or password");
+                req.setAttribute("errorMessage", "Неверный логин или пароль");
                 req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGIN_PAGE + ".jsp")
                         .forward(req, resp);
             }

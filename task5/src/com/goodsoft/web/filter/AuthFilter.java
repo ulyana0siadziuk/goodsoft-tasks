@@ -23,17 +23,24 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         String servletPath = req.getServletPath();
-
-        if (CommonConstant.LOGIN_JHTML.equals(servletPath)) {
-            chain.doFilter(request, response);
-            return;
+        if (servletPath == null || servletPath.isEmpty()) {
+            servletPath = CommonConstant.INDEX_PAGE;
         }
 
         HttpSession session = req.getSession(false);
         UserInfo userInfo = null;
-
         if (session != null) {
             userInfo = (UserInfo) session.getAttribute(CommonConstant.USER_INFO_KEY);
+        }
+
+        if (CommonConstant.LOGIN_JHTML.equals(servletPath) && userInfo != null) {
+            resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
+            return;
+        }
+
+        if (isPublicPath(servletPath)) {
+            chain.doFilter(request, response);
+            return;
         }
 
         if (userInfo != null) {
@@ -41,5 +48,11 @@ public class AuthFilter implements Filter {
         } else {
             resp.sendRedirect(req.getContextPath() + CommonConstant.LOGIN_JHTML);
         }
+    }
+
+    private boolean isPublicPath(String servletPath) {
+        return CommonConstant.LOGIN_JHTML.equals(servletPath)
+                || CommonConstant.INDEX_PAGE.equals(servletPath)
+                || CommonConstant.INDEX_JSP.equals(servletPath);
     }
 }
