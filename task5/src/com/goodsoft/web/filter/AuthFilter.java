@@ -1,6 +1,7 @@
 package com.goodsoft.web.filter;
 
-import com.goodsoft.web.model.UserInfo;
+import com.goodsoft.web.model.Role;
+import com.goodsoft.web.model.User;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -28,9 +29,9 @@ public class AuthFilter implements Filter {
         }
 
         HttpSession session = req.getSession(false);
-        UserInfo userInfo = null;
+        User userInfo = null;
         if (session != null) {
-            userInfo = (UserInfo) session.getAttribute(CommonConstant.USER_INFO_KEY);
+            userInfo = (User) session.getAttribute(CommonConstant.USER_INFO_KEY);
         }
 
         if (CommonConstant.LOGIN_JHTML.equals(servletPath) && userInfo != null) {
@@ -44,6 +45,10 @@ public class AuthFilter implements Filter {
         }
 
         if (userInfo != null) {
+            if (isAdminOnlyPath(servletPath) && userInfo.getRole() != Role.ADMIN) {
+                resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
+                return;
+            }
             chain.doFilter(request, response);
         } else {
             resp.sendRedirect(req.getContextPath() + CommonConstant.LOGIN_JHTML);
@@ -53,6 +58,12 @@ public class AuthFilter implements Filter {
     private boolean isPublicPath(String servletPath) {
         return CommonConstant.LOGIN_JHTML.equals(servletPath)
                 || CommonConstant.INDEX_PAGE.equals(servletPath)
-                || CommonConstant.INDEX_JSP.equals(servletPath);
+                || CommonConstant.INDEX_JSP.equals(servletPath)
+                || servletPath.startsWith("/css/");
+    }
+
+    private boolean isAdminOnlyPath(String servletPath) {
+        return ("/" + CommonConstant.USERS_PAGE + ".jhtml").equals(servletPath)
+                || servletPath.startsWith("/" + CommonConstant.USEREDIT_PAGE + ".jhtml");
     }
 }

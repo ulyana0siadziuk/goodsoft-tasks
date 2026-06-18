@@ -1,0 +1,114 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f6f6f6;
+    color: #222;
+}
+
+.container {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.site-header,
+.site-menu,
+.site-footer {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    margin-top: 16px;
+}
+
+.header-row,
+.menu-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+}
+
+.logo-box {
+    width: 180px;
+    height: 48px;
+    border: 1px solid #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.header-user {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.menu-row {
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.menu-row a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+}
+
+.page-content {
+    min-height: 480px;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    margin-top: 16px;
+    padding: 24px 18px;
+}
+
+.site-footer {
+    margin-bottom: 16px;
+}
+
+.site-footer p {
+    text-align: center;
+    margin: 0;
+    padding: 14px 0;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.users-table th,
+.users-table td {
+    border: 1px solid #dcdcdc;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.users-table th {
+    background: #f0f0f0;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #eee;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #222;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin: 4px 0 8px;
+}

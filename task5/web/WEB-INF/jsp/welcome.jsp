@@ -5,17 +5,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Главная</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<h1>Добро пожаловать!</h1>
 
-<p>Вы вошли как: <c:out value="${sessionScope.userInfo.login}"/></p>
+<%@ include file="header.jsp" %>
+<%@ include file="menu.jsp" %>
 
-<p>
-    <a href="${pageContext.request.contextPath}/loginedit.jhtml">Сменить пароль</a>
-</p>
-<p>
-    <a href="${pageContext.request.contextPath}/logout.jhtml">Выйти</a>
-</p>
+<main class="page-content">
+    <div class="container">
+        <h1>Главная страница</h1>
+        <p>Добро пожаловать в систему!</p>
+
+        <c:if test="${sessionScope.userInfo.role == 'ADMIN'}">
+            <p>
+                <a href="${pageContext.request.contextPath}/loginedit.jhtml">Сменить пароль</a>
+            </p>
+        </c:if>
+    </div>
+</main>
+
+<%@ include file="footer.jsp" %>
+
 </body>
 </html>

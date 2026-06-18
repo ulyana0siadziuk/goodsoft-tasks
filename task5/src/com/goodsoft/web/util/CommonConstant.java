@@ -15,6 +15,10 @@ public final class CommonConstant {
     public static final String LOGOUT_PAGE = "logout";
     public static final String LOGINEDIT_PAGE = "loginedit";
     public static final String CHANGE_PASSWORD_ACTION = "changePassword";
+    public static final String USERS_PAGE = "users";
+    public static final String USEREDIT_PAGE = "useredit";
+    public static final String DELETE_USER_ACTION = "delete";
+    public static final String SAVE_USER_ACTION = "save";
 
     private CommonConstant() {
     }

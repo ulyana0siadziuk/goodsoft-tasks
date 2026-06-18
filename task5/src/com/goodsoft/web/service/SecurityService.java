@@ -1,25 +1,20 @@
 package com.goodsoft.web.service;
 
-import com.goodsoft.web.model.UserInfo;
+import com.goodsoft.web.model.User;
 
 public class SecurityService {
 
-    private String storedPassword = "admin";
+    private final UserService userService = new UserService();
 
-    public boolean login(UserInfo userInfo) {
-        return "admin".equals(userInfo.getLogin())
-                && storedPassword.equals(userInfo.getPassword());
+    public UserService getUserService() {
+        return userService;
     }
 
-    public boolean changePassword(UserInfo userInfo, String oldPassword, String newPassword) {
-        if (!"admin".equals(userInfo.getLogin())) {
-            return false;
-        }
-        if (!storedPassword.equals(oldPassword)) {
-            return false;
-        }
-        storedPassword = newPassword;
-        userInfo.setPassword(newPassword);
-        return true;
+    public boolean login(User user) {
+        return userService.login(user.getLogin(), user.getPassword());
+    }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        return userService.changePassword(user.getLogin(), oldPassword, newPassword);
     }
 }
