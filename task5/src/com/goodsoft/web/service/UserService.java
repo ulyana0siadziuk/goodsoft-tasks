@@ -77,6 +77,27 @@ public class UserService {
         users.removeIf(user -> user.getLogin().equals(login));
     }
 
+    public long countAdmins() {
+        return users.stream().filter(user -> user.getRole() == Role.ADMIN).count();
+    }
+
+    public String validateDelete(String login, String currentLogin) {
+        if (login == null || login.isBlank()) {
+            return "Логин не указан";
+        }
+        User user = findByLogin(login);
+        if (user == null) {
+            return "Пользователь не найден";
+        }
+        if (login.equals(currentLogin)) {
+            return "Нельзя удалить самого себя";
+        }
+        if (user.getRole() == Role.ADMIN && countAdmins() <= 1) {
+            return "Нельзя удалить последнего администратора";
+        }
+        return null;
+    }
+
     public boolean exists(String login) {
         return findByLogin(login) != null;
     }

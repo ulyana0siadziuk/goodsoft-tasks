@@ -35,30 +35,30 @@ public class WebDispatcherServlet extends HttpServlet {
     private void process(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String servletPath = req.getServletPath();
-        String pageName = servletPath.substring(1, servletPath.length() - ".jhtml".length());
+        String pagePath = servletPath.substring(0, servletPath.length() - ".jhtml".length());
 
-        if (CommonConstant.LOGIN_PAGE.equals(pageName)) {
+        if (CommonConstant.LOGIN_PAGE.equals(pagePath)) {
             handleLogin(req, resp);
             return;
         }
-        if (CommonConstant.LOGOUT_PAGE.equals(pageName)) {
+        if (CommonConstant.LOGOUT_PAGE.equals(pagePath)) {
             handleLogout(req, resp);
             return;
         }
-        if (CommonConstant.LOGINEDIT_PAGE.equals(pageName)) {
+        if (CommonConstant.LOGINEDIT_PAGE.equals(pagePath)) {
             handleLoginEdit(req, resp);
             return;
         }
-        if (CommonConstant.USERS_PAGE.equals(pageName)) {
+        if (CommonConstant.USERS_PAGE.equals(pagePath)) {
             handleUsers(req, resp);
             return;
         }
-        if (CommonConstant.USEREDIT_PAGE.equals(pageName)) {
+        if (CommonConstant.USEREDIT_PAGE.equals(pagePath)) {
             handleUserEdit(req, resp);
             return;
         }
 
-        req.getRequestDispatcher(CommonConstant.JSP_PATH + pageName + ".jsp")
+        req.getRequestDispatcher(CommonConstant.JSP_PATH + pagePath.substring(1) + ".jsp")
                 .forward(req, resp);
     }
 
@@ -72,15 +72,15 @@ public class WebDispatcherServlet extends HttpServlet {
 
             if (securityService.getUserService().login(login, password)) {
                 User user = securityService.getUserService().findByLogin(login);
-                req.getSession().setAttribute(CommonConstant.USER_INFO_KEY, user);
+                req.getSession().setAttribute(CommonConstant.USER_KEY, user);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             } else {
                 req.setAttribute("errorMessage", "Неверный логин или пароль");
-                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGIN_PAGE + ".jsp")
+                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGIN_PAGE.substring(1) + ".jsp")
                         .forward(req, resp);
             }
         } else {
-            req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGIN_PAGE + ".jsp")
+            req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGIN_PAGE.substring(1) + ".jsp")
                     .forward(req, resp);
         }
     }
@@ -97,23 +97,23 @@ public class WebDispatcherServlet extends HttpServlet {
     private void handleLoginEdit(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         HttpSession session = req.getSession();
-        User userInfo = (User) session.getAttribute(CommonConstant.USER_INFO_KEY);
+        User user = (User) session.getAttribute(CommonConstant.USER_KEY);
         String action = req.getParameter(CommonConstant.ACTION_PARAM);
 
         if (CommonConstant.CHANGE_PASSWORD_ACTION.equals(action)) {
             String oldPassword = req.getParameter("oldPassword");
             String newPassword = req.getParameter("newPassword");
 
-            if (securityService.changePassword(userInfo, oldPassword, newPassword)) {
-                session.setAttribute(CommonConstant.USER_INFO_KEY, userInfo);
+            if (securityService.changePassword(user, oldPassword, newPassword)) {
+                session.setAttribute(CommonConstant.USER_KEY, user);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             } else {
                 req.setAttribute("errorMessage", "Неверный старый пароль");
-                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGINEDIT_PAGE + ".jsp")
+                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGINEDIT_PAGE.substring(1) + ".jsp")
                         .forward(req, resp);
             }
         } else {
-            req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGINEDIT_PAGE + ".jsp")
+            req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.LOGINEDIT_PAGE.substring(1) + ".jsp")
                     .forward(req, resp);
         }
     }
@@ -124,13 +124,27 @@ public class WebDispatcherServlet extends HttpServlet {
 
         if (CommonConstant.DELETE_USER_ACTION.equals(action)) {
             String login = req.getParameter("login");
-            securityService.getUserService().delete(login);
-            resp.sendRedirect(req.getContextPath() + "/" + CommonConstant.USERS_PAGE + ".jhtml");
+            var userService = securityService.getUserService();
+
+            HttpSession session = req.getSession(false);
+            User current = session != null ? (User) session.getAttribute(CommonConstant.USER_KEY) : null;
+            String currentLogin = current != null ? current.getLogin() : null;
+
+            String error = userService.validateDelete(login, currentLogin);
+            if (error == null) {
+                userService.delete(login);
+                resp.sendRedirect(req.getContextPath() + CommonConstant.USERS_PAGE + ".jhtml");
+            } else {
+                req.setAttribute("errorMessage", error);
+                req.setAttribute("users", userService.findAll());
+                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USERS_PAGE.substring(1) + ".jsp")
+                        .forward(req, resp);
+            }
             return;
         }
 
         req.setAttribute("users", securityService.getUserService().findAll());
-        req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USERS_PAGE + ".jsp")
+        req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USERS_PAGE.substring(1) + ".jsp")
                 .forward(req, resp);
     }
 
@@ -179,7 +193,7 @@ public class WebDispatcherServlet extends HttpServlet {
                 req.setAttribute("errors", errors);
                 req.setAttribute("editUser", user);
                 req.setAttribute("editMode", isEdit);
-                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE + ".jsp")
+                req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE.substring(1) + ".jsp")
                         .forward(req, resp);
                 return;
             }
@@ -187,21 +201,18 @@ public class WebDispatcherServlet extends HttpServlet {
             if (!isEdit) {
                 userService.add(user);
             } else {
-                if (!oldLogin.equals(login)) {
-                    userService.delete(oldLogin);
-                }
                 userService.update(user);
 
                 HttpSession session = req.getSession(false);
                 if (session != null) {
-                    User current = (User) session.getAttribute(CommonConstant.USER_INFO_KEY);
+                    User current = (User) session.getAttribute(CommonConstant.USER_KEY);
                     if (current != null && current.getLogin().equals(oldLogin)) {
-                        session.setAttribute(CommonConstant.USER_INFO_KEY, user);
+                        session.setAttribute(CommonConstant.USER_KEY, user);
                     }
                 }
             }
 
-            resp.sendRedirect(req.getContextPath() + "/" + CommonConstant.USERS_PAGE + ".jhtml");
+            resp.sendRedirect(req.getContextPath() + CommonConstant.USERS_PAGE + ".jhtml");
             return;
         }
 
@@ -213,7 +224,7 @@ public class WebDispatcherServlet extends HttpServlet {
             req.setAttribute("editMode", false);
         }
 
-        req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE + ".jsp")
+        req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE.substring(1) + ".jsp")
                 .forward(req, resp);
     }
 }

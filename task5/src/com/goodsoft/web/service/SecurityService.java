@@ -10,10 +10,6 @@ public class SecurityService {
         return userService;
     }
 
-    public boolean login(User user) {
-        return userService.login(user.getLogin(), user.getPassword());
-    }
-
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         return userService.changePassword(user.getLogin(), oldPassword, newPassword);
     }

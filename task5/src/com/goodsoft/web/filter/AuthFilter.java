@@ -29,12 +29,12 @@ public class AuthFilter implements Filter {
         }
 
         HttpSession session = req.getSession(false);
-        User userInfo = null;
+        User user = null;
         if (session != null) {
-            userInfo = (User) session.getAttribute(CommonConstant.USER_INFO_KEY);
+            user = (User) session.getAttribute(CommonConstant.USER_KEY);
         }
 
-        if (CommonConstant.LOGIN_JHTML.equals(servletPath) && userInfo != null) {
+        if (CommonConstant.LOGIN_JHTML.equals(servletPath) && user != null) {
             resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             return;
         }
@@ -44,8 +44,8 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        if (userInfo != null) {
-            if (isAdminOnlyPath(servletPath) && userInfo.getRole() != Role.ADMIN) {
+        if (user != null) {
+            if (isAdminOnlyPath(servletPath) && user.getRole() != Role.ADMIN) {
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
                 return;
             }
@@ -63,7 +63,8 @@ public class AuthFilter implements Filter {
     }
 
     private boolean isAdminOnlyPath(String servletPath) {
-        return ("/" + CommonConstant.USERS_PAGE + ".jhtml").equals(servletPath)
-                || servletPath.startsWith("/" + CommonConstant.USEREDIT_PAGE + ".jhtml");
+        return (CommonConstant.USERS_PAGE + ".jhtml").equals(servletPath)
+                || (CommonConstant.USEREDIT_PAGE + ".jhtml").equals(servletPath)
+                || (CommonConstant.LOGINEDIT_PAGE + ".jhtml").equals(servletPath);
     }
 }

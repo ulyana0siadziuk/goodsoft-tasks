@@ -17,6 +17,10 @@
     <div class="container">
         <h1>Список пользователей</h1>
 
+        <c:if test="${not empty errorMessage}">
+            <p class="error">${errorMessage}</p>
+        </c:if>
+
         <p>
             <a class="btn" href="${pageContext.request.contextPath}/useredit.jhtml">Добавить</a>
         </p>
@@ -52,7 +56,10 @@
                               style="display:inline;">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="login" value="${u.login}">
-                            <button type="submit">Удалить</button>
+                            <button type="submit"
+                                    onclick="return confirm('Удалить пользователя ${u.login}?');">
+                                Удалить
+                            </button>
                         </form>
                     </td>
                 </tr>
