@@ -6,12 +6,12 @@
         <div class="logo-box">LOGO</div>
 
         <div class="header-user">
-      <span>
-        Привет,
-        <strong>
-          <c:out value="${sessionScope.user.fullName}" />
-        </strong>
-      </span>
+            <span>
+                Привет,
+                <strong>
+                    <c:out value="${sessionScope.user.fullName}"/>
+                </strong>
+            </span>
             <a href="${pageContext.request.contextPath}/logout.jhtml">Выйти</a>
         </div>
     </div>
