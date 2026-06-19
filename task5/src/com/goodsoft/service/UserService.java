@@ -1,0 +1,61 @@
+package com.goodsoft.service;
+
+import com.goodsoft.dao.UserDao;
+import com.goodsoft.model.Role;
+import com.goodsoft.model.User;
+
+import java.util.List;
+
+public class UserService {
+
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
+
+    public User findByLogin(String login) {
+        return userDao.findByLogin(login);
+    }
+
+    public void add(User user) {
+        userDao.save(user);
+    }
+
+    public void update(User user) {
+        userDao.update(user);
+    }
+
+    public void delete(String login) {
+        userDao.delete(login);
+    }
+
+    public boolean exists(String login) {
+        return userDao.exists(login);
+    }
+
+    public String validateDelete(String login, String currentLogin) {
+        if (login == null || login.isBlank()) {
+            return "Логин не указан";
+        }
+
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            return "Пользователь не найден";
+        }
+
+        if (login.equals(currentLogin)) {
+            return "Нельзя удалить самого себя";
+        }
+
+        if (user.getRole() == Role.ADMIN && userDao.countAdmins() <= 1) {
+            return "Нельзя удалить последнего администратора";
+        }
+
+        return null;
+    }
+}

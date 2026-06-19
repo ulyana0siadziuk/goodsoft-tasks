@@ -1,4 +1,4 @@
-package com.goodsoft.web.model;
+package com.goodsoft.model;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;

@@ -1,7 +1,6 @@
-package com.goodsoft.web.service;
+package com.goodsoft.service;
 
-import com.goodsoft.web.model.Role;
-import com.goodsoft.web.model.User;
+import com.goodsoft.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

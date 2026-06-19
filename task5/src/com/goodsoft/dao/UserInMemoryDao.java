@@ -1,17 +1,17 @@
-package com.goodsoft.web.service;
+package com.goodsoft.dao;
 
-import com.goodsoft.web.model.Role;
-import com.goodsoft.web.model.User;
+import com.goodsoft.model.Role;
+import com.goodsoft.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserService {
+public class UserInMemoryDao implements UserDao {
 
     private final List<User> users = new ArrayList<>();
 
-    public UserService() {
+    public UserInMemoryDao() {
         initTestUsers();
     }
 
@@ -42,10 +42,12 @@ public class UserService {
         users.add(user2);
     }
 
+    @Override
     public List<User> findAll() {
         return new ArrayList<>(users);
     }
 
+    @Override
     public User findByLogin(String login) {
         for (User user : users) {
             if (user.getLogin().equals(login)) {
@@ -55,15 +57,12 @@ public class UserService {
         return null;
     }
 
-    public boolean login(String login, String password) {
-        User user = findByLogin(login);
-        return user != null && user.getPassword().equals(password);
-    }
-
-    public void add(User user) {
+    @Override
+    public void save(User user) {
         users.add(user);
     }
 
+    @Override
     public void update(User user) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getLogin().equals(user.getLogin())) {
@@ -73,41 +72,20 @@ public class UserService {
         }
     }
 
+    @Override
     public void delete(String login) {
         users.removeIf(user -> user.getLogin().equals(login));
     }
 
-    public long countAdmins() {
-        return users.stream().filter(user -> user.getRole() == Role.ADMIN).count();
-    }
-
-    public String validateDelete(String login, String currentLogin) {
-        if (login == null || login.isBlank()) {
-            return "Логин не указан";
-        }
-        User user = findByLogin(login);
-        if (user == null) {
-            return "Пользователь не найден";
-        }
-        if (login.equals(currentLogin)) {
-            return "Нельзя удалить самого себя";
-        }
-        if (user.getRole() == Role.ADMIN && countAdmins() <= 1) {
-            return "Нельзя удалить последнего администратора";
-        }
-        return null;
-    }
-
+    @Override
     public boolean exists(String login) {
         return findByLogin(login) != null;
     }
 
-    public boolean changePassword(String login, String oldPassword, String newPassword) {
-        User user = findByLogin(login);
-        if (user == null || !user.getPassword().equals(oldPassword)) {
-            return false;
-        }
-        user.setPassword(newPassword);
-        return true;
+    @Override
+    public long countAdmins() {
+        return users.stream()
+                .filter(user -> user.getRole() == Role.ADMIN)
+                .count();
     }
 }

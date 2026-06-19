@@ -1,15 +1,17 @@
 package com.goodsoft.web.servlet;
 
-import com.goodsoft.web.model.Role;
-import com.goodsoft.web.model.User;
-import com.goodsoft.web.service.SecurityService;
-import com.goodsoft.web.service.ValidationService;
+import com.goodsoft.model.Role;
+import com.goodsoft.model.User;
+import com.goodsoft.service.SecurityService;
+import com.goodsoft.service.ValidationService;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import com.goodsoft.dao.UserDao;
+import com.goodsoft.dao.UserInMemoryDao;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 public class WebDispatcherServlet extends HttpServlet {
 
-    private final SecurityService securityService = new SecurityService();
+    private final SecurityService securityService = new SecurityService(new UserInMemoryDao());
     private final ValidationService validationService = new ValidationService();
 
     @Override
@@ -70,7 +72,7 @@ public class WebDispatcherServlet extends HttpServlet {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
 
-            if (securityService.getUserService().login(login, password)) {
+            if (securityService.login(login, password)) {
                 User user = securityService.getUserService().findByLogin(login);
                 req.getSession().setAttribute(CommonConstant.USER_KEY, user);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
