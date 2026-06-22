@@ -1,6 +1,7 @@
 package com.goodsoft.service;
 
 import com.goodsoft.dao.UserDao;
+import com.goodsoft.dao.UserInMemoryDao;
 import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 
@@ -8,10 +9,18 @@ import java.util.List;
 
 public class UserService {
 
+    private static UserService instance;
     private final UserDao userDao;
 
-    public UserService(UserDao userDao) {
+    private UserService(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public static UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService(UserInMemoryDao.getInstance());
+        }
+        return instance;
     }
 
     public List<User> findAll() {

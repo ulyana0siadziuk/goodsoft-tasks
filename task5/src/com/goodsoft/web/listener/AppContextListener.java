@@ -15,10 +15,10 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
 
-        UserDao userDao = new UserInMemoryDao();
-        UserService userService = new UserService(userDao);
+        UserService userService = UserService.getInstance();
+        SecurityService securityService = SecurityService.getInstance();
         context.setAttribute(CommonConstant.USER_SERVICE_KEY, userService);
-        context.setAttribute(CommonConstant.SECURITY_SERVICE_KEY, new SecurityService(userService));
+        context.setAttribute(CommonConstant.SECURITY_SERVICE_KEY, securityService);
     }
 
     @Override

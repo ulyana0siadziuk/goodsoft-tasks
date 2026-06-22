@@ -9,10 +9,18 @@ import java.util.List;
 
 public class UserInMemoryDao implements UserDao {
 
+    private static UserInMemoryDao instance;
     private final List<User> users = new ArrayList<>();
 
-    public UserInMemoryDao() {
+    private UserInMemoryDao() {
         initTestUsers();
+    }
+
+    public static UserInMemoryDao getInstance() {
+        if (instance == null) {
+            instance = new UserInMemoryDao();
+        }
+        return instance;
     }
 
     private void initTestUsers() {
