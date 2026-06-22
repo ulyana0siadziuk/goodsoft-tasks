@@ -19,6 +19,8 @@ public final class CommonConstant {
     public static final String USEREDIT_PAGE = "/useredit";
     public static final String DELETE_USER_ACTION = "delete";
     public static final String SAVE_USER_ACTION = "save";
+    public static final String USER_SERVICE_KEY = "userService";
+    public static final String SECURITY_SERVICE_KEY = "securityService";
 
     private CommonConstant() {
     }

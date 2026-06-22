@@ -25,4 +25,8 @@
         <url-pattern>*.jhtml</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>com.goodsoft.web.listener.AppContextListener</listener-class>
+    </listener>
+
 </web-app>

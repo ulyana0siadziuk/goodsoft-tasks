@@ -1,7 +1,7 @@
 package com.goodsoft.web.filter;
 
-import com.goodsoft.web.model.Role;
-import com.goodsoft.web.model.User;
+import com.goodsoft.model.Role;
+import com.goodsoft.model.User;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

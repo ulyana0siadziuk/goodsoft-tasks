@@ -3,15 +3,15 @@ package com.goodsoft.web.servlet;
 import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 import com.goodsoft.service.SecurityService;
+import com.goodsoft.service.UserService;
 import com.goodsoft.service.ValidationService;
 import com.goodsoft.web.util.CommonConstant;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import com.goodsoft.dao.UserDao;
-import com.goodsoft.dao.UserInMemoryDao;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,8 +19,21 @@ import java.util.Map;
 
 public class WebDispatcherServlet extends HttpServlet {
 
-    private final SecurityService securityService = new SecurityService(new UserInMemoryDao());
-    private final ValidationService validationService = new ValidationService();
+    private UserService userService;
+    private SecurityService securityService;
+    private ValidationService validationService;
+
+    @Override
+    public void init() throws ServletException {
+        ServletContext context = getServletContext();
+        userService = (UserService) context.getAttribute(CommonConstant.USER_SERVICE_KEY);
+        securityService = (SecurityService) context.getAttribute(CommonConstant.SECURITY_SERVICE_KEY);
+        validationService = new ValidationService();
+
+        if (userService == null || securityService == null) {
+            throw new ServletException("Сервисы не инициализированы. Проверьте AppContextListener в web.xml.");
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -73,7 +86,7 @@ public class WebDispatcherServlet extends HttpServlet {
             String password = req.getParameter("password");
 
             if (securityService.login(login, password)) {
-                User user = securityService.getUserService().findByLogin(login);
+                User user = userService.findByLogin(login);
                 req.getSession().setAttribute(CommonConstant.USER_KEY, user);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             } else {
@@ -126,7 +139,6 @@ public class WebDispatcherServlet extends HttpServlet {
 
         if (CommonConstant.DELETE_USER_ACTION.equals(action)) {
             String login = req.getParameter("login");
-            var userService = securityService.getUserService();
 
             HttpSession session = req.getSession(false);
             User current = session != null ? (User) session.getAttribute(CommonConstant.USER_KEY) : null;
@@ -145,7 +157,7 @@ public class WebDispatcherServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("users", securityService.getUserService().findAll());
+        req.setAttribute("users", userService.findAll());
         req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USERS_PAGE.substring(1) + ".jsp")
                 .forward(req, resp);
     }
@@ -153,7 +165,6 @@ public class WebDispatcherServlet extends HttpServlet {
     private void handleUserEdit(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String action = req.getParameter(CommonConstant.ACTION_PARAM);
-        var userService = securityService.getUserService();
 
         if (CommonConstant.SAVE_USER_ACTION.equals(action)) {
             String login = req.getParameter("login");

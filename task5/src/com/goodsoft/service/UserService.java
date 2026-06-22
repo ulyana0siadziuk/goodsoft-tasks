@@ -38,6 +38,20 @@ public class UserService {
         return userDao.exists(login);
     }
 
+    public boolean login(String login, String password) {
+        User user = userDao.findByLogin(login);
+        return user != null && user.getPassword().equals(password);
+    }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        if (user == null || !user.getPassword().equals(oldPassword)) {
+            return false;
+        }
+        user.setPassword(newPassword);
+        userDao.update(user);
+        return true;
+    }
+
     public String validateDelete(String login, String currentLogin) {
         if (login == null || login.isBlank()) {
             return "Логин не указан";
