@@ -11,9 +11,9 @@ public class SecurityService {
         this.userService = userService;
     }
 
-    public static SecurityService getInstance() {
+    public static synchronized SecurityService getInstance(UserService userService) {
         if (instance == null) {
-            instance = new SecurityService(UserService.getInstance());
+            instance = new SecurityService(userService);
         }
         return instance;
     }

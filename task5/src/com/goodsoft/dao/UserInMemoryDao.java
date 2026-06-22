@@ -16,7 +16,7 @@ public class UserInMemoryDao implements UserDao {
         initTestUsers();
     }
 
-    public static UserInMemoryDao getInstance() {
+    public static synchronized  UserInMemoryDao getInstance() {
         if (instance == null) {
             instance = new UserInMemoryDao();
         }

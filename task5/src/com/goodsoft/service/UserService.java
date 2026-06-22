@@ -1,7 +1,6 @@
 package com.goodsoft.service;
 
 import com.goodsoft.dao.UserDao;
-import com.goodsoft.dao.UserInMemoryDao;
 import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 
@@ -16,9 +15,9 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public static UserService getInstance() {
+    public static synchronized UserService getInstance(UserDao userDao) {
         if (instance == null) {
-            instance = new UserService(UserInMemoryDao.getInstance());
+            instance = new UserService(userDao);
         }
         return instance;
     }
