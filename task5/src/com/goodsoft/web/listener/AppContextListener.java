@@ -1,5 +1,7 @@
 package com.goodsoft.web.listener;
 
+import com.goodsoft.dao.DaoFactory;
+import com.goodsoft.dao.UserDao;
 import com.goodsoft.service.SecurityService;
 import com.goodsoft.service.ServiceFactory;
 import com.goodsoft.service.UserService;
@@ -14,8 +16,9 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
 
-        UserService userService = ServiceFactory.createUserService();
-        SecurityService securityService = ServiceFactory.createSecurityService();
+        UserDao userDao = DaoFactory.createUserDao();
+        UserService userService = ServiceFactory.createUserService(userDao);
+        SecurityService securityService = ServiceFactory.createSecurityService(userService);
         context.setAttribute(CommonConstant.USER_SERVICE_KEY, userService);
         context.setAttribute(CommonConstant.SECURITY_SERVICE_KEY, securityService);
     }

@@ -1,6 +1,6 @@
 package com.goodsoft.dao;
 
-public class DaoFactory {
+public final class DaoFactory {
 
     private DaoFactory() {
     }

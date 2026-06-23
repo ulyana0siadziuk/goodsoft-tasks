@@ -15,7 +15,7 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public static synchronized UserService getInstance(UserDao userDao) {
+    static synchronized UserService getInstance(UserDao userDao) {
         if (instance == null) {
             instance = new UserService(userDao);
         }
