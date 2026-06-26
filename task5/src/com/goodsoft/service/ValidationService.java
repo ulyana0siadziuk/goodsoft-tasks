@@ -1,6 +1,7 @@
 package com.goodsoft.service;
 
 import com.goodsoft.model.User;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class ValidationService {
 
     public Map<String, String> validateUser(User user, boolean isEdit, UserService userService) {

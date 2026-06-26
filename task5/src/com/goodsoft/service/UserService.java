@@ -2,24 +2,16 @@ package com.goodsoft.service;
 
 import com.goodsoft.dao.UserDao;
 import com.goodsoft.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserService {
 
-    private static UserService instance;
-    private final UserDao userDao;
-
-    private UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    static synchronized UserService getInstance(UserDao userDao) {
-        if (instance == null) {
-            instance = new UserService(userDao);
-        }
-        return instance;
-    }
+    @Autowired
+    private UserDao userDao;
 
     public List<User> findAll() {
         return userDao.findAll();

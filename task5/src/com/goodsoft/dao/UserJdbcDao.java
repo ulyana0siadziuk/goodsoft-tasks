@@ -1,6 +1,7 @@
 package com.goodsoft.dao;
 
 import com.goodsoft.model.User;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class UserJdbcDao implements UserDao {
 
     private static final String SELECT_USERS_WITH_ROLES = """

@@ -1,22 +1,14 @@
 package com.goodsoft.service;
 
 import com.goodsoft.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SecurityService {
 
-    private static SecurityService instance;
-    private final UserService userService;
-
-    private SecurityService(UserService userService) {
-        this.userService = userService;
-    }
-
-    static synchronized SecurityService getInstance(UserService userService) {
-        if (instance == null) {
-            instance = new SecurityService(userService);
-        }
-        return instance;
-    }
+    @Autowired
+    private UserService userService;
 
     public User login(String login, String password) {
         return userService.login(login, password);
