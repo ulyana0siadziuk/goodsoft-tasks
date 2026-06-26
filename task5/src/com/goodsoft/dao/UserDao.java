@@ -12,4 +12,5 @@ public interface UserDao {
     boolean exists(String login);
     long countAdmins();
     List<String> findAllRoles();
+    void updatePassword(String login, String newPassword);
 }

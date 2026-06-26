@@ -38,7 +38,7 @@ public class UserJdbcDao implements UserDao {
                 addRowToMap(usersByLogin, rs);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось получить список пользователей: " + e.getMessage(), e);
         }
 
         return new ArrayList<>(usersByLogin.values());
@@ -61,7 +61,7 @@ public class UserJdbcDao implements UserDao {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось найти пользователя '" + login + "': " + e.getMessage(), e);
         }
 
         return usersByLogin.get(login);
@@ -107,7 +107,7 @@ public class UserJdbcDao implements UserDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось сохранить пользователя '" + user.getLogin() + "': " + e.getMessage(), e);
         }
     }
 
@@ -152,7 +152,27 @@ public class UserJdbcDao implements UserDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось обновить пользователя '" + user.getLogin() + "': " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void updatePassword(String login, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE login = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newPassword);
+            ps.setString(2, login);
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new RuntimeException("Пользователь не найден: " + login);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось обновить пароль пользователя '" + login + "': " + e.getMessage(), e);
         }
     }
 
@@ -188,7 +208,7 @@ public class UserJdbcDao implements UserDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось удалить пользователя '" + login + "': " + e.getMessage(), e);
         }
     }
 
@@ -205,7 +225,7 @@ public class UserJdbcDao implements UserDao {
                 return rs.next();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось проверить существование пользователя '" + login + "': " + e.getMessage(), e);
         }
     }
 
@@ -228,7 +248,7 @@ public class UserJdbcDao implements UserDao {
             }
             return 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось подсчитать администраторов: " + e.getMessage(), e);
         }
     }
 
@@ -245,7 +265,7 @@ public class UserJdbcDao implements UserDao {
                 roles.add(rs.getString("name"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Не удалось получить список ролей: " + e.getMessage(), e);
         }
 
         return roles;

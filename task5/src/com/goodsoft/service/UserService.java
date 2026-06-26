@@ -61,8 +61,8 @@ public class UserService {
         if (user == null || !user.getPassword().equals(oldPassword)) {
             return false;
         }
+        userDao.updatePassword(user.getLogin(), newPassword);
         user.setPassword(newPassword);
-        userDao.update(user);
         return true;
     }
 
