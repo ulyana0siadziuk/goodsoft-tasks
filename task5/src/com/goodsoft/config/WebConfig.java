@@ -1,9 +1,11 @@
 package com.goodsoft.config;
 
+import com.goodsoft.web.filter.AuthFilter;
 import com.goodsoft.web.servlet.WebDispatcherServlet;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,19 @@ public class WebConfig {
                 new ServletRegistrationBean<>(new DefaultServlet(), "/");
         registration.setName("default");
         registration.setLoadOnStartup(1);
+        return registration;
+    }
+
+    @Bean
+    public AuthFilter authFilter() {
+        return new AuthFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean<AuthFilter> authFilterRegistration(AuthFilter authFilter) {
+        FilterRegistrationBean<AuthFilter> registration = new FilterRegistrationBean<>(authFilter);
+        registration.addUrlPatterns("/*");
+        registration.setOrder(1);
         return registration;
     }
 

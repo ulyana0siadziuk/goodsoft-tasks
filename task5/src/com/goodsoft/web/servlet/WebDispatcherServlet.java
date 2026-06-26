@@ -184,7 +184,7 @@ public class WebDispatcherServlet extends HttpServlet {
             user.setSalary(validationService.parseInteger(salaryStr, "salary", errors));
             user.setRoles(parseRoles(rolesArray));
 
-            errors.putAll(validationService.validateUser(user, isEdit, userService));
+            errors.putAll(validationService.validateUser(user, isEdit));
 
             if (isEdit) {
                 String updateError = userService.validateUpdate(user, oldLogin);

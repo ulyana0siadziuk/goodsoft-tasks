@@ -2,6 +2,7 @@ package com.goodsoft.service;
 
 import com.goodsoft.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -12,7 +13,10 @@ import java.util.Map;
 @Service
 public class ValidationService {
 
-    public Map<String, String> validateUser(User user, boolean isEdit, UserService userService) {
+    @Autowired
+    private UserService userService;
+
+    public Map<String, String> validateUser(User user, boolean isEdit) {
         Map<String, String> errors = new HashMap<>();
 
         if (isBlank(user.getLogin())) {
