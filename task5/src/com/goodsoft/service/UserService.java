@@ -1,7 +1,6 @@
 package com.goodsoft.service;
 
 import com.goodsoft.dao.UserDao;
-import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 
 import java.util.List;
@@ -30,6 +29,10 @@ public class UserService {
         return userDao.findByLogin(login);
     }
 
+    public List<String> findAllRoles() {
+        return userDao.findAllRoles();
+    }
+
     public void add(User user) {
         userDao.save(user);
     }
@@ -46,9 +49,12 @@ public class UserService {
         return userDao.exists(login);
     }
 
-    public boolean login(String login, String password) {
+    public User login(String login, String password) {
         User user = userDao.findByLogin(login);
-        return user != null && user.getPassword().equals(password);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+        return null;
     }
 
     public boolean changePassword(User user, String oldPassword, String newPassword) {
@@ -74,8 +80,27 @@ public class UserService {
             return "Нельзя удалить самого себя";
         }
 
-        if (user.getRole() == Role.ADMIN && userDao.countAdmins() <= 1) {
+        if (user.isAdmin() && userDao.countAdmins() <= 1) {
             return "Нельзя удалить последнего администратора";
+        }
+
+        return null;
+    }
+
+    public String validateUpdate(User user, String oldLogin) {
+        if (oldLogin == null || oldLogin.isBlank()) {
+            return null;
+        }
+
+        User existing = userDao.findByLogin(oldLogin);
+        if (existing == null) {
+            return "Пользователь не найден";
+        }
+
+        if (existing.isAdmin()
+                && !user.isAdmin()
+                && userDao.countAdmins() <= 1) {
+            return "Нельзя снять роль администратора у последнего администратора";
         }
 
         return null;

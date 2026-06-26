@@ -5,7 +5,7 @@
     <div class="container menu-row">
         <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
 
-        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <c:if test="${sessionScope.user.admin}">
             <a href="${pageContext.request.contextPath}/users.jhtml">Пользователи</a>
         </c:if>
     </div>

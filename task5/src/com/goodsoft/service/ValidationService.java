@@ -5,13 +5,10 @@ import com.goodsoft.model.User;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ValidationService {
-
-    private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[\\w.-]+@[\\w.-]+\\.\\w+$");
 
     public Map<String, String> validateUser(User user, boolean isEdit, UserService userService) {
         Map<String, String> errors = new HashMap<>();
@@ -26,28 +23,27 @@ public class ValidationService {
             errors.put("password", "Пароль обязателен");
         }
 
-        if (isBlank(user.getEmail())) {
-            errors.put("email", "Email обязателен");
-        } else if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            errors.put("email", "Некорректный формат email");
-        }
-
-        if (isBlank(user.getSurname())) {
-            errors.put("surname", "Фамилия обязательна");
-        }
-
         if (isBlank(user.getName())) {
             errors.put("name", "Имя обязательно");
         }
 
-        if (user.getBirthday() == null) {
-            errors.put("birthday", "Дата рождения обязательна");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+        if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
             errors.put("birthday", "Дата рождения не может быть в будущем");
         }
 
-        if (user.getRole() == null) {
-            errors.put("role", "Роль обязательна");
+        if (user.getAge() != null && user.getAge() < 0) {
+            errors.put("age", "Возраст не может быть отрицательным");
+        }
+
+        if (user.getSalary() != null && user.getSalary() < 0) {
+            errors.put("salary", "Зарплата не может быть отрицательной");
+        }
+
+        List<String> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            errors.put("roles", "Выберите хотя бы одну роль");
+        } else if (roles.contains("ADMIN") && roles.contains("USER")) {
+            errors.put("roles", "Роли USER и ADMIN нельзя выбирать одновременно");
         }
 
         return errors;
@@ -55,13 +51,24 @@ public class ValidationService {
 
     public LocalDate parseBirthday(String birthdayStr, Map<String, String> errors) {
         if (isBlank(birthdayStr)) {
-            errors.put("birthday", "Дата рождения обязательна");
             return null;
         }
         try {
             return LocalDate.parse(birthdayStr);
         } catch (DateTimeParseException e) {
             errors.put("birthday", "Некорректный формат даты");
+            return null;
+        }
+    }
+
+    public Integer parseInteger(String value, String fieldName, Map<String, String> errors) {
+        if (isBlank(value)) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            errors.put(fieldName, "Введите целое число");
             return null;
         }
     }

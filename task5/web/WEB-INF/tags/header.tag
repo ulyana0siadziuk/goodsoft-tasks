@@ -9,7 +9,7 @@
             <span>
                 Привет,
                 <strong>
-                    <c:out value="${sessionScope.user.fullName}"/>
+                    <c:out value="${sessionScope.user.name}"/>
                 </strong>
             </span>
             <a href="${pageContext.request.contextPath}/logout.jhtml">Выйти</a>

@@ -18,7 +18,7 @@ public class SecurityService {
         return instance;
     }
 
-    public boolean login(String login, String password) {
+    public User login(String login, String password) {
         return userService.login(login, password);
     }
 

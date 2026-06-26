@@ -6,6 +6,6 @@ public final class DaoFactory {
     }
 
     public static UserDao createUserDao() {
-        return UserInMemoryDao.getInstance();
+        return new UserJdbcDao();
     }
 }

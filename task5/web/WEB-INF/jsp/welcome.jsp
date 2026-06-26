@@ -6,7 +6,7 @@
     <h1>Главная страница</h1>
     <p>Добро пожаловать в систему!</p>
 
-    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+    <c:if test="${sessionScope.user.admin}">
         <p>
             <a href="${pageContext.request.contextPath}/loginedit.jhtml">Сменить пароль</a>
         </p>

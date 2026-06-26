@@ -1,6 +1,5 @@
 package com.goodsoft.web.filter;
 
-import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.Filter;
@@ -45,7 +44,7 @@ public class AuthFilter implements Filter {
         }
 
         if (user != null) {
-            if (isAdminOnlyPath(servletPath) && user.getRole() != Role.ADMIN) {
+            if (isAdminOnlyPath(servletPath) && !user.isAdmin()) {
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
                 return;
             }

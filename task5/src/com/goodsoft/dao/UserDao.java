@@ -11,4 +11,5 @@ public interface UserDao {
     void delete(String login);
     boolean exists(String login);
     long countAdmins();
+    List<String> findAllRoles();
 }

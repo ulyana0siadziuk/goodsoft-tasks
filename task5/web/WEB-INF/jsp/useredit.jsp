@@ -29,22 +29,6 @@
         </c:if>
         <br>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" required
-               value="${editUser.email}"><br>
-        <c:if test="${not empty errors.email}">
-            <p class="error">${errors.email}</p>
-        </c:if>
-        <br>
-
-        <label>Фамилия:</label><br>
-        <input type="text" name="surname" required
-               value="${editUser.surname}"><br>
-        <c:if test="${not empty errors.surname}">
-            <p class="error">${errors.surname}</p>
-        </c:if>
-        <br>
-
         <label>Имя:</label><br>
         <input type="text" name="name" required
                value="${editUser.name}"><br>
@@ -53,25 +37,46 @@
         </c:if>
         <br>
 
-        <label>Отчество:</label><br>
-        <input type="text" name="patronymic"
-               value="${editUser.patronymic}"><br><br>
-
         <label>Дата рождения:</label><br>
-        <input type="date" name="birthday" required
+        <input type="date" name="birthday"
                value="${editUser.birthday}"><br>
         <c:if test="${not empty errors.birthday}">
             <p class="error">${errors.birthday}</p>
         </c:if>
         <br>
 
-        <label>Роль:</label><br>
-        <select name="role" required>
-            <option value="ADMIN" ${editUser.role == 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-            <option value="USER" ${editUser.role == 'USER' ? 'selected' : ''}>USER</option>
+        <label>Возраст:</label><br>
+        <input type="number" name="age" min="0"
+               value="${editUser.age}"><br>
+        <c:if test="${not empty errors.age}">
+            <p class="error">${errors.age}</p>
+        </c:if>
+        <br>
+
+        <label>Зарплата:</label><br>
+        <input type="number" name="salary" min="0"
+               value="${editUser.salary}"><br>
+        <c:if test="${not empty errors.salary}">
+            <p class="error">${errors.salary}</p>
+        </c:if>
+        <br>
+
+        <label>Роли (удерживайте Ctrl для выбора нескольких):</label><br>
+        <select name="roles" multiple size="7" required style="min-width: 220px;">
+            <c:forEach var="roleOption" items="${allRoles}">
+                <c:set var="isSelected" value="false"/>
+                <c:forEach var="userRole" items="${editUser.roles}">
+                    <c:if test="${userRole == roleOption}">
+                        <c:set var="isSelected" value="true"/>
+                    </c:if>
+                </c:forEach>
+                <option value="${roleOption}" <c:if test="${isSelected}">selected</c:if>>
+                    <c:out value="${roleOption}"/>
+                </option>
+            </c:forEach>
         </select><br>
-        <c:if test="${not empty errors.role}">
-            <p class="error">${errors.role}</p>
+        <c:if test="${not empty errors.roles}">
+            <p class="error">${errors.roles}</p>
         </c:if>
         <br>
 

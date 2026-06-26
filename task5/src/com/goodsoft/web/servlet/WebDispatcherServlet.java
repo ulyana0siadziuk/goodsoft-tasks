@@ -1,6 +1,5 @@
 package com.goodsoft.web.servlet;
 
-import com.goodsoft.model.Role;
 import com.goodsoft.model.User;
 import com.goodsoft.service.SecurityService;
 import com.goodsoft.service.UserService;
@@ -14,7 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WebDispatcherServlet extends HttpServlet {
@@ -85,8 +87,8 @@ public class WebDispatcherServlet extends HttpServlet {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
 
-            if (securityService.login(login, password)) {
-                User user = userService.findByLogin(login);
+            User user = securityService.login(login, password);
+            if (user != null) {
                 req.getSession().setAttribute(CommonConstant.USER_KEY, user);
                 resp.sendRedirect(req.getContextPath() + CommonConstant.WELCOME_PAGE + ".jhtml");
             } else {
@@ -169,12 +171,11 @@ public class WebDispatcherServlet extends HttpServlet {
         if (CommonConstant.SAVE_USER_ACTION.equals(action)) {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
-            String email = req.getParameter("email");
-            String surname = req.getParameter("surname");
             String name = req.getParameter("name");
-            String patronymic = req.getParameter("patronymic");
             String birthdayStr = req.getParameter("birthday");
-            String roleStr = req.getParameter("role");
+            String ageStr = req.getParameter("age");
+            String salaryStr = req.getParameter("salary");
+            String[] rolesArray = req.getParameterValues("roles");
             String oldLogin = req.getParameter("oldLogin");
 
             boolean isEdit = oldLogin != null && !oldLogin.isBlank();
@@ -184,28 +185,26 @@ public class WebDispatcherServlet extends HttpServlet {
             User user = new User();
             user.setLogin(login);
             user.setPassword(password);
-            user.setEmail(email);
-            user.setSurname(surname);
             user.setName(name);
-            user.setPatronymic(patronymic);
             user.setBirthday(validationService.parseBirthday(birthdayStr, errors));
-
-            Role role = null;
-            if (roleStr != null && !roleStr.isBlank()) {
-                try {
-                    role = Role.valueOf(roleStr);
-                } catch (IllegalArgumentException e) {
-                    errors.put("role", "Некорректная роль");
-                }
-            }
-            user.setRole(role);
+            user.setAge(validationService.parseInteger(ageStr, "age", errors));
+            user.setSalary(validationService.parseInteger(salaryStr, "salary", errors));
+            user.setRoles(parseRoles(rolesArray));
 
             errors.putAll(validationService.validateUser(user, isEdit, userService));
+
+            if (isEdit) {
+                String updateError = userService.validateUpdate(user, oldLogin);
+                if (updateError != null) {
+                    errors.put("roles", updateError);
+                }
+            }
 
             if (!errors.isEmpty()) {
                 req.setAttribute("errors", errors);
                 req.setAttribute("editUser", user);
                 req.setAttribute("editMode", isEdit);
+                req.setAttribute("allRoles", userService.findAllRoles());
                 req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE.substring(1) + ".jsp")
                         .forward(req, resp);
                 return;
@@ -237,7 +236,15 @@ public class WebDispatcherServlet extends HttpServlet {
             req.setAttribute("editMode", false);
         }
 
+        req.setAttribute("allRoles", userService.findAllRoles());
         req.getRequestDispatcher(CommonConstant.JSP_PATH + CommonConstant.USEREDIT_PAGE.substring(1) + ".jsp")
                 .forward(req, resp);
+    }
+
+    private List<String> parseRoles(String[] rolesArray) {
+        if (rolesArray == null || rolesArray.length == 0) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(Arrays.asList(rolesArray));
     }
 }
