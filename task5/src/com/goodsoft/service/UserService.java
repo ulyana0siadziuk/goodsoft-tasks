@@ -4,6 +4,7 @@ import com.goodsoft.dao.UserDao;
 import com.goodsoft.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,14 +26,17 @@ public class UserService {
         return userDao.findAllRoles();
     }
 
+    @Transactional
     public void add(User user) {
         userDao.save(user);
     }
 
+    @Transactional
     public void update(User user) {
         userDao.update(user);
     }
 
+    @Transactional
     public void delete(String login) {
         userDao.delete(login);
     }

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
+    private Integer id;
     private String login;
     private String password;
     private String name;
@@ -16,6 +17,14 @@ public class User {
     private List<String> roles = new ArrayList<>();
 
     public User() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getLogin() {

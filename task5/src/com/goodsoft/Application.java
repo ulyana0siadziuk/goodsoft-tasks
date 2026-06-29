@@ -1,5 +1,6 @@
 package com.goodsoft;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -13,6 +14,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
         DispatcherServletAutoConfiguration.class,
         ErrorMvcAutoConfiguration.class
 })
+@MapperScan("com.goodsoft.dao.mapper")
 public class Application extends SpringBootServletInitializer {
 
     @Override
