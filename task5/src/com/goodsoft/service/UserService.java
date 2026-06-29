@@ -33,6 +33,11 @@ public class UserService {
 
     @Transactional
     public void update(User user) {
+        User existing = userDao.findByLogin(user.getLogin());
+        if (existing == null) {
+            throw new RuntimeException("Пользователь не найден: " + user.getLogin());
+        }
+        user.setId(existing.getId());
         userDao.update(user);
     }
 
@@ -55,6 +60,9 @@ public class UserService {
 
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         if (user == null || !user.getPassword().equals(oldPassword)) {
+            return false;
+        }
+        if (!exists(user.getLogin())) {
             return false;
         }
         userDao.updatePassword(user.getLogin(), newPassword);

@@ -19,8 +19,8 @@
     </sql>
 
     <resultMap id="userWithRolesMap" type="com.goodsoft.model.User">
-        <id property="login" column="login"/>
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
+        <result property="login" column="login"/>
         <result property="password" column="password"/>
         <result property="name" column="name"/>
         <result property="birthday" column="birth_date"/>

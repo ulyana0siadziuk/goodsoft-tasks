@@ -25,10 +25,6 @@ public class UserMyBatisDao implements UserDao {
 
     @Override
     public void save(User user) {
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            throw new RuntimeException("У пользователя должна быть хотя бы одна роль");
-        }
-
         userMapper.insertUser(user);
         for (String roleName : user.getRoles()) {
             userMapper.insertUserRole(user.getId(), roleName);
@@ -37,16 +33,6 @@ public class UserMyBatisDao implements UserDao {
 
     @Override
     public void update(User user) {
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            throw new RuntimeException("У пользователя должна быть хотя бы одна роль");
-        }
-
-        User existing = userMapper.findByLogin(user.getLogin());
-        if (existing == null) {
-            throw new RuntimeException("Пользователь не найден: " + user.getLogin());
-        }
-        user.setId(existing.getId());
-
         userMapper.updateUser(user);
         userMapper.deleteUserRolesByLogin(user.getLogin());
         for (String roleName : user.getRoles()) {
@@ -77,9 +63,6 @@ public class UserMyBatisDao implements UserDao {
 
     @Override
     public void updatePassword(String login, String newPassword) {
-        int rows = userMapper.updatePassword(login, newPassword);
-        if (rows == 0) {
-            throw new RuntimeException("Пользователь не найден: " + login);
-        }
+        userMapper.updatePassword(login, newPassword);
     }
 }
