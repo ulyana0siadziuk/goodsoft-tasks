@@ -3,10 +3,10 @@
 
 <nav class="site-menu">
     <div class="container menu-row">
-        <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
+        <a href="${pageContext.request.contextPath}/welcome">Главная</a>
 
         <c:if test="${sessionScope.user.admin}">
-            <a href="${pageContext.request.contextPath}/users.jhtml">Пользователи</a>
+            <a href="${pageContext.request.contextPath}/users">Пользователи</a>
         </c:if>
     </div>
 </nav>

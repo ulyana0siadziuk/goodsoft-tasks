@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,13 +14,12 @@
     <p style="color:red">${errorMessage}</p>
 </c:if>
 
-<form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post">
-    <label>Старый пароль: <input type="password" name="oldPassword" required></label><br><br>
-    <label>Новый пароль: <input type="password" name="newPassword" required></label><br><br>
-    <input type="hidden" name="action" value="changePassword">
+<form:form modelAttribute="changePasswordForm" action="${pageContext.request.contextPath}/loginedit" method="post">
+    <label>Старый пароль: <form:password path="oldPassword" required="required"/></label><br><br>
+    <label>Новый пароль: <form:password path="newPassword" required="required"/></label><br><br>
     <button type="submit">Сохранить</button>
-</form>
+</form:form>
 
-<p><a href="${pageContext.request.contextPath}/welcome.jhtml">Назад</a></p>
+<p><a href="${pageContext.request.contextPath}/welcome">Назад</a></p>
 </body>
 </html>

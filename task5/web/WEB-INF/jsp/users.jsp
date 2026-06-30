@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:myhtml title="Пользователи">
@@ -11,7 +12,7 @@
     </c:if>
 
     <p>
-        <a class="btn" href="${pageContext.request.contextPath}/useredit.jhtml">Добавить</a>
+        <a class="btn" href="${pageContext.request.contextPath}/useredit">Добавить</a>
     </p>
 
     <table class="users-table">
@@ -38,20 +39,20 @@
                     <fmt:formatDate value="${u.birthdayDate}" pattern="dd.MM.yyyy"/>
                 </td>
                 <td class="actions">
-                    <a href="${pageContext.request.contextPath}/useredit.jhtml?login=${u.login}">
+                    <a href="${pageContext.request.contextPath}/useredit?login=${u.login}">
                         Редактировать
                     </a>
 
-                    <form method="post"
-                          action="${pageContext.request.contextPath}/users.jhtml"
-                          style="display:inline;">
-                        <input type="hidden" name="action" value="delete">
+                    <form:form modelAttribute="deleteUserForm"
+                               action="${pageContext.request.contextPath}/users"
+                               method="post"
+                               cssStyle="display:inline;">
                         <input type="hidden" name="login" value="${u.login}">
                         <button type="submit"
                                 onclick="return confirm('Удалить пользователя ${u.login}?');">
                             Удалить
                         </button>
-                    </form>
+                    </form:form>
                 </td>
             </tr>
         </c:forEach>

@@ -5,12 +5,14 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class User {
     private Integer id;
     private String login;
     private String password;
     private String name;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthday;
     private Integer age;
     private Integer salary;

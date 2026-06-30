@@ -8,7 +8,7 @@
 
     <c:if test="${sessionScope.user.admin}">
         <p>
-            <a href="${pageContext.request.contextPath}/loginedit.jhtml">Сменить пароль</a>
+            <a href="${pageContext.request.contextPath}/loginedit">Сменить пароль</a>
         </p>
     </c:if>
 </t:myhtml>

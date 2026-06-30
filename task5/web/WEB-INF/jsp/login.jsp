@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,11 +14,10 @@
     <p style="color:red">${errorMessage}</p>
 </c:if>
 
-<form action="${pageContext.request.contextPath}/login.jhtml" method="post">
-    <label>Логин: <input type="text" name="login" required></label><br><br>
-    <label>Пароль: <input type="password" name="password" required></label><br><br>
-    <input type="hidden" name="action" value="login">
+<form:form modelAttribute="loginForm" action="${pageContext.request.contextPath}/login" method="post">
+    <label>Логин: <form:input path="login" required="required"/></label><br><br>
+    <label>Пароль: <form:password path="password" required="required"/></label><br><br>
     <button type="submit">Войти</button>
-</form>
+</form:form>
 </body>
 </html>

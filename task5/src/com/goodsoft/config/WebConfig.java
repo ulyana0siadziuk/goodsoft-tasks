@@ -1,19 +1,18 @@
 package com.goodsoft.config;
 
 import com.goodsoft.web.filter.AuthFilter;
-import com.goodsoft.web.servlet.WebDispatcherServlet;
-import org.apache.catalina.servlets.DefaultServlet;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatDocumentRootCustomizer() {
@@ -24,15 +23,6 @@ public class WebConfig {
             }
             factory.setDocumentRoot(docBase);
         };
-    }
-
-    @Bean
-    public ServletRegistrationBean<DefaultServlet> defaultServletRegistration() {
-        ServletRegistrationBean<DefaultServlet> registration =
-                new ServletRegistrationBean<>(new DefaultServlet(), "/");
-        registration.setName("default");
-        registration.setLoadOnStartup(1);
-        return registration;
     }
 
     @Bean
@@ -48,17 +38,9 @@ public class WebConfig {
         return registration;
     }
 
-    @Bean
-    public WebDispatcherServlet webDispatcherServlet() {
-        return new WebDispatcherServlet();
-    }
-
-    @Bean
-    public ServletRegistrationBean<WebDispatcherServlet> dispatcherServletRegistration(
-            WebDispatcherServlet webDispatcherServlet) {
-        ServletRegistrationBean<WebDispatcherServlet> registration =
-                new ServletRegistrationBean<>(webDispatcherServlet, "*.jhtml");
-        registration.setLoadOnStartup(2);
-        return registration;
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("/css/");
     }
 }

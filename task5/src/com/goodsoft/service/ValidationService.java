@@ -1,11 +1,10 @@
 package com.goodsoft.service;
 
 import com.goodsoft.model.User;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +38,13 @@ public class ValidationService {
 
         if (user.getAge() != null && user.getAge() < 0) {
             errors.put("age", "Возраст не может быть отрицательным");
+        } else if (user.getAge() != null && user.getAge() < 18) {
+            errors.put("age", "Возраст должен быть не менее 18 лет");
+        } else if (user.getBirthday() != null && user.getAge() != null) {
+            int calculatedAge = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+            if (!user.getAge().equals(calculatedAge)) {
+                errors.put("age", "Возраст не соответствует дате рождения");
+            }
         }
 
         if (user.getSalary() != null && user.getSalary() < 0) {
@@ -53,30 +59,6 @@ public class ValidationService {
         }
 
         return errors;
-    }
-
-    public LocalDate parseBirthday(String birthdayStr, Map<String, String> errors) {
-        if (isBlank(birthdayStr)) {
-            return null;
-        }
-        try {
-            return LocalDate.parse(birthdayStr);
-        } catch (DateTimeParseException e) {
-            errors.put("birthday", "Некорректный формат даты");
-            return null;
-        }
-    }
-
-    public Integer parseInteger(String value, String fieldName, Map<String, String> errors) {
-        if (isBlank(value)) {
-            return null;
-        }
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            errors.put(fieldName, "Введите целое число");
-            return null;
-        }
     }
 
     private boolean isBlank(String value) {
