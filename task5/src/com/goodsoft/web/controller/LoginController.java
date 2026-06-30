@@ -2,16 +2,17 @@ package com.goodsoft.web.controller;
 
 import com.goodsoft.model.User;
 import com.goodsoft.service.SecurityService;
+import com.goodsoft.web.form.ChangePasswordForm;
+import com.goodsoft.web.form.LoginForm;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import com.goodsoft.web.form.LoginForm;
-import com.goodsoft.web.form.ChangePasswordForm;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class LoginController {
@@ -28,6 +29,7 @@ public class LoginController {
     @PostMapping("/login")
     public String processLogin(
             @ModelAttribute("loginForm") LoginForm loginForm,
+            BindingResult bindingResult,
             HttpSession session,
             Model model) {
 
@@ -38,7 +40,7 @@ public class LoginController {
             return "redirect:/welcome";
         }
 
-        model.addAttribute("errorMessage", "Неверный логин или пароль");
+        bindingResult.reject("error.login", "Неверный логин или пароль");
         return "login";
     }
 
@@ -51,6 +53,7 @@ public class LoginController {
     @PostMapping("/loginedit")
     public String changePassword(
             @ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm,
+            BindingResult bindingResult,
             HttpSession session,
             Model model) {
 
@@ -65,7 +68,7 @@ public class LoginController {
             return "redirect:/welcome";
         }
 
-        model.addAttribute("errorMessage", "Неверный старый пароль");
+        bindingResult.reject("error.password", "Неверный старый пароль");
         return "loginedit";
     }
 

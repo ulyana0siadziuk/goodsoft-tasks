@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -44,6 +45,7 @@ public class UserController {
     @PostMapping("/users")
     public String deleteUser(
             @ModelAttribute("deleteUserForm") DeleteUserForm deleteUserForm,
+            BindingResult bindingResult,
             HttpSession session,
             Model model) {
 
@@ -58,7 +60,7 @@ public class UserController {
             return "redirect:/users";
         }
 
-        model.addAttribute("errorMessage", error);
+        bindingResult.reject("error.delete", error);
         model.addAttribute("users", userService.findAll());
         model.addAttribute("deleteUserForm", new DeleteUserForm());
         return "users";
@@ -84,6 +86,7 @@ public class UserController {
     @PostMapping("/useredit")
     public String saveUser(
             @ModelAttribute("editUser") User user,
+            BindingResult bindingResult,
             @RequestParam(required = false) String oldLogin,
             HttpSession session,
             Model model) {
@@ -98,8 +101,10 @@ public class UserController {
             }
         }
 
-        if (!errors.isEmpty()) {
-            model.addAttribute("errors", errors);
+        errors.forEach((field, message) ->
+                bindingResult.rejectValue(field, "", message));
+
+        if (bindingResult.hasErrors()) {
             model.addAttribute("editMode", isEdit);
             model.addAttribute("allRoles", userService.findAllRoles());
             return "useredit";

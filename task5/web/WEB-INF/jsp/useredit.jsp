@@ -18,53 +18,32 @@
 
         <label>Логин:</label><br>
         <form:input path="login" readonly="${editMode}"/><br>
-        <c:if test="${not empty errors.login}">
-            <p class="error">${errors.login}</p>
-        </c:if>
-        <br>
+        <form:errors path="login" cssClass="error" element="p"/><br>
 
         <label>Пароль:</label><br>
         <form:password path="password"/><br>
-        <c:if test="${not empty errors.password}">
-            <p class="error">${errors.password}</p>
-        </c:if>
-        <br>
+        <form:errors path="password" cssClass="error" element="p"/><br>
 
         <label>Имя:</label><br>
         <form:input path="name"/><br>
-        <c:if test="${not empty errors.name}">
-            <p class="error">${errors.name}</p>
-        </c:if>
-        <br>
+        <form:errors path="name" cssClass="error" element="p"/><br>
 
         <label>Дата рождения:</label><br>
         <form:input path="birthday" type="date"/><br>
-        <c:if test="${not empty errors.birthday}">
-            <p class="error">${errors.birthday}</p>
-        </c:if>
-        <br>
+        <form:errors path="birthday" cssClass="error" element="p"/><br>
 
         <label>Возраст:</label><br>
         <form:input path="age" type="number" min="0"/><br>
-        <c:if test="${not empty errors.age}">
-            <p class="error">${errors.age}</p>
-        </c:if>
-        <br>
+        <form:errors path="age" cssClass="error" element="p"/><br>
 
         <label>Зарплата:</label><br>
         <form:input path="salary" type="number" min="0"/><br>
-        <c:if test="${not empty errors.salary}">
-            <p class="error">${errors.salary}</p>
-        </c:if>
-        <br>
+        <form:errors path="salary" cssClass="error" element="p"/><br>
 
         <label>Роли (удерживайте Ctrl для выбора нескольких):</label><br>
         <form:select path="roles" items="${allRoles}" multiple="true" size="7"
                      cssStyle="min-width: 220px;"/><br>
-        <c:if test="${not empty errors.roles}">
-            <p class="error">${errors.roles}</p>
-        </c:if>
-        <br>
+        <form:errors path="roles" cssClass="error" element="p"/><br>
 
         <button type="submit">Сохранить</button>
         <a href="${pageContext.request.contextPath}/users">Отмена</a>

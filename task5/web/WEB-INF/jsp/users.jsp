@@ -7,9 +7,11 @@
 <t:myhtml title="Пользователи">
     <h1>Список пользователей</h1>
 
-    <c:if test="${not empty errorMessage}">
-        <p class="error">${errorMessage}</p>
-    </c:if>
+    <form:form modelAttribute="deleteUserForm"
+               action="${pageContext.request.contextPath}/users"
+               method="post">
+        <form:errors cssClass="error" element="p"/>
+    </form:form>
 
     <p>
         <a class="btn" href="${pageContext.request.contextPath}/useredit">Добавить</a>
@@ -47,7 +49,7 @@
                                action="${pageContext.request.contextPath}/users"
                                method="post"
                                cssStyle="display:inline;">
-                        <input type="hidden" name="login" value="${u.login}">
+                        <form:hidden path="login" value="${u.login}"/>
                         <button type="submit"
                                 onclick="return confirm('Удалить пользователя ${u.login}?');">
                             Удалить
