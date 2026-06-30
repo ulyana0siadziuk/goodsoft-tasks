@@ -1,21 +1,40 @@
 package com.goodsoft.model;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PastOrPresent;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class User {
     private Integer id;
+
+    @NotBlank(message = "Логин обязателен")
     private String login;
+
+    @NotBlank(message = "Пароль обязателен")
     private String password;
+
+    @NotBlank(message = "Имя обязательно")
     private String name;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
+
+    @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
     private Integer age;
+
+    @Min(value = 0, message = "Зарплата не может быть отрицательной")
     private Integer salary;
+
+    @NotEmpty(message = "Выберите хотя бы одну роль")
     private List<String> roles = new ArrayList<>();
 
     public User() {

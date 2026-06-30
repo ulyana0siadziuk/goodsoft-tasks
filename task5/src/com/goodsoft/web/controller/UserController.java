@@ -6,6 +6,7 @@ import com.goodsoft.service.ValidationService;
 import com.goodsoft.web.form.DeleteUserForm;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
@@ -17,9 +18,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -44,10 +42,15 @@ public class UserController {
 
     @PostMapping("/users")
     public String deleteUser(
-            @ModelAttribute("deleteUserForm") DeleteUserForm deleteUserForm,
+            @Valid @ModelAttribute("deleteUserForm") DeleteUserForm deleteUserForm,
             BindingResult bindingResult,
             HttpSession session,
             Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("users", userService.findAll());
+            return "users";
+        }
 
         String login = deleteUserForm.getLogin();
 
@@ -85,24 +88,22 @@ public class UserController {
 
     @PostMapping("/useredit")
     public String saveUser(
-            @ModelAttribute("editUser") User user,
+            @Valid @ModelAttribute("editUser") User user,
             BindingResult bindingResult,
             @RequestParam(required = false) String oldLogin,
             HttpSession session,
             Model model) {
 
         boolean isEdit = oldLogin != null && !oldLogin.isBlank();
-        Map<String, String> errors = new HashMap<>(validationService.validateUser(user, isEdit));
+
+        validationService.validateBusinessRules(user, isEdit, bindingResult);
 
         if (isEdit) {
             String updateError = userService.validateUpdate(user, oldLogin);
             if (updateError != null) {
-                errors.put("roles", updateError);
+                bindingResult.rejectValue("roles", "", updateError);
             }
         }
-
-        errors.forEach((field, message) ->
-                bindingResult.rejectValue(field, "", message));
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("editMode", isEdit);

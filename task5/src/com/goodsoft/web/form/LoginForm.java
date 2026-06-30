@@ -1,8 +1,13 @@
 package com.goodsoft.web.form;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginForm {
 
+    @NotBlank(message = "Логин обязателен")
     private String login;
+
+    @NotBlank(message = "Пароль обязателен")
     private String password;
 
     public String getLogin() {

@@ -6,6 +6,7 @@ import com.goodsoft.web.form.ChangePasswordForm;
 import com.goodsoft.web.form.LoginForm;
 import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +29,14 @@ public class LoginController {
 
     @PostMapping("/login")
     public String processLogin(
-            @ModelAttribute("loginForm") LoginForm loginForm,
+            @Valid @ModelAttribute("loginForm") LoginForm loginForm,
             BindingResult bindingResult,
             HttpSession session,
             Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "login";
+        }
 
         User user = securityService.login(loginForm.getLogin(), loginForm.getPassword());
 
@@ -52,10 +57,14 @@ public class LoginController {
 
     @PostMapping("/loginedit")
     public String changePassword(
-            @ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm,
+            @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm,
             BindingResult bindingResult,
             HttpSession session,
             Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "loginedit";
+        }
 
         User user = (User) session.getAttribute(CommonConstant.USER_KEY);
 

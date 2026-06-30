@@ -71,10 +71,6 @@ public class UserService {
     }
 
     public String validateDelete(String login, String currentLogin) {
-        if (login == null || login.isBlank()) {
-            return "Логин не указан";
-        }
-
         User user = userDao.findByLogin(login);
         if (user == null) {
             return "Пользователь не найден";
