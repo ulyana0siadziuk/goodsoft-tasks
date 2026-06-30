@@ -57,16 +57,15 @@ public class UserController {
         User current = (User) session.getAttribute(CommonConstant.USER_KEY);
         String currentLogin = current != null ? current.getLogin() : null;
 
-        String error = userService.validateDelete(login, currentLogin);
-        if (error == null) {
-            userService.delete(login);
-            return "redirect:/users";
+        validationService.validateDelete(login, currentLogin, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("users", userService.findAll());
+            return "users";
         }
 
-        bindingResult.reject("error.delete", error);
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("deleteUserForm", new DeleteUserForm());
-        return "users";
+        userService.delete(login);
+        return "redirect:/users";
     }
 
     @GetMapping("/useredit")
@@ -99,10 +98,7 @@ public class UserController {
         validationService.validateBusinessRules(user, isEdit, bindingResult);
 
         if (isEdit) {
-            String updateError = userService.validateUpdate(user, oldLogin);
-            if (updateError != null) {
-                bindingResult.rejectValue("roles", "", updateError);
-            }
+            validationService.validateUpdate(user, oldLogin, bindingResult);
         }
 
         if (bindingResult.hasErrors()) {
@@ -114,6 +110,10 @@ public class UserController {
         if (!isEdit) {
             userService.add(user);
         } else {
+            User existing = userService.findByLogin(oldLogin);
+            if (user.getPassword() == null || user.getPassword().isBlank()) {
+                user.setPassword(existing.getPassword());
+            }
             userService.update(user);
 
             User current = (User) session.getAttribute(CommonConstant.USER_KEY);

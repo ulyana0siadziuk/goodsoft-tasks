@@ -50,6 +50,10 @@ public class UserService {
         return userDao.exists(login);
     }
 
+    public long countAdmins() {
+        return userDao.countAdmins();
+    }
+
     public User login(String login, String password) {
         User user = userDao.findByLogin(login);
         if (user != null && user.getPassword().equals(password)) {
@@ -68,41 +72,5 @@ public class UserService {
         userDao.updatePassword(user.getLogin(), newPassword);
         user.setPassword(newPassword);
         return true;
-    }
-
-    public String validateDelete(String login, String currentLogin) {
-        User user = userDao.findByLogin(login);
-        if (user == null) {
-            return "Пользователь не найден";
-        }
-
-        if (login.equals(currentLogin)) {
-            return "Нельзя удалить самого себя";
-        }
-
-        if (user.isAdmin() && userDao.countAdmins() <= 1) {
-            return "Нельзя удалить последнего администратора";
-        }
-
-        return null;
-    }
-
-    public String validateUpdate(User user, String oldLogin) {
-        if (oldLogin == null || oldLogin.isBlank()) {
-            return null;
-        }
-
-        User existing = userDao.findByLogin(oldLogin);
-        if (existing == null) {
-            return "Пользователь не найден";
-        }
-
-        if (existing.isAdmin()
-                && !user.isAdmin()
-                && userDao.countAdmins() <= 1) {
-            return "Нельзя снять роль администратора у последнего администратора";
-        }
-
-        return null;
     }
 }

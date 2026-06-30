@@ -16,6 +16,10 @@ public class ValidationService {
     private UserService userService;
 
     public void validateBusinessRules(User user, boolean isEdit, BindingResult bindingResult) {
+        if (!isEdit && isBlank(user.getPassword())) {
+            bindingResult.rejectValue("password", "", "Пароль обязателен");
+        }
+
         if (!isEdit && !isBlank(user.getLogin()) && userService.exists(user.getLogin())) {
             bindingResult.rejectValue("login", "", "Пользователь с таким логином уже существует");
         }
@@ -30,6 +34,42 @@ public class ValidationService {
         List<String> roles = user.getRoles();
         if (roles != null && roles.contains("ADMIN") && roles.contains("USER")) {
             bindingResult.rejectValue("roles", "", "Роли USER и ADMIN нельзя выбирать одновременно");
+        }
+    }
+
+    public void validateDelete(String login, String currentLogin, BindingResult bindingResult) {
+        User user = userService.findByLogin(login);
+        if (user == null) {
+            bindingResult.reject("error.delete", "Пользователь не найден");
+            return;
+        }
+
+        if (login.equals(currentLogin)) {
+            bindingResult.reject("error.delete", "Нельзя удалить самого себя");
+            return;
+        }
+
+        if (user.isAdmin() && userService.countAdmins() <= 1) {
+            bindingResult.reject("error.delete", "Нельзя удалить последнего администратора");
+        }
+    }
+
+    public void validateUpdate(User user, String oldLogin, BindingResult bindingResult) {
+        if (oldLogin == null || oldLogin.isBlank()) {
+            return;
+        }
+
+        User existing = userService.findByLogin(oldLogin);
+        if (existing == null) {
+            bindingResult.rejectValue("roles", "", "Пользователь не найден");
+            return;
+        }
+
+        if (existing.isAdmin()
+                && !user.isAdmin()
+                && userService.countAdmins() <= 1) {
+            bindingResult.rejectValue("roles", "",
+                    "Нельзя снять роль администратора у последнего администратора");
         }
     }
 

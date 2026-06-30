@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PastOrPresent;
 import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,19 +19,21 @@ public class User {
     @NotBlank(message = "Логин обязателен")
     private String login;
 
-    @NotBlank(message = "Пароль обязателен")
     private String password;
 
     @NotBlank(message = "Имя обязательно")
     private String name;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "Дата рождения обязательна")
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
+    @NotNull(message = "Возраст обязателен")
     @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
     private Integer age;
 
+    @NotNull(message = "Зарплата обязательна")
     @Min(value = 0, message = "Зарплата не может быть отрицательной")
     private Integer salary;
 

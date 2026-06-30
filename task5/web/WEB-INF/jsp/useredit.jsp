@@ -33,7 +33,7 @@
         <form:errors path="birthday" cssClass="error" element="p"/><br>
 
         <label>Возраст:</label><br>
-        <form:input path="age" type="number" min="0"/><br>
+        <form:input path="age" type="number" min="18"/><br>
         <form:errors path="age" cssClass="error" element="p"/><br>
 
         <label>Зарплата:</label><br>
