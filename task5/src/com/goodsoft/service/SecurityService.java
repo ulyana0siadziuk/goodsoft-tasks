@@ -10,10 +10,6 @@ public class SecurityService {
     @Autowired
     private UserService userService;
 
-    public User login(String login, String password) {
-        return userService.login(login, password);
-    }
-
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         return userService.changePassword(user, oldPassword, newPassword);
     }

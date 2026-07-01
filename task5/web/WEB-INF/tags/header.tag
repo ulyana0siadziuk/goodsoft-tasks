@@ -1,6 +1,6 @@
 <%@ tag pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <header class="site-header">
@@ -13,7 +13,7 @@
             <span>
                 <spring:message code="header.hello"/>
                 <strong>
-                    <c:out value="${sessionScope.user.name}"/>
+                    <sec:authentication property="principal.name"/>
                 </strong>
             </span>
             <a href="${pageContext.request.contextPath}/logout">

@@ -54,14 +54,6 @@ public class UserService {
         return userDao.countAdmins();
     }
 
-    public User login(String login, String password) {
-        User user = userDao.findByLogin(login);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        }
-        return null;
-    }
-
     public boolean changePassword(User user, String oldPassword, String newPassword) {
         if (user == null || !user.getPassword().equals(oldPassword)) {
             return false;

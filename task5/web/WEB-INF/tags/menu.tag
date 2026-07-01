@@ -1,6 +1,6 @@
 <%@ tag pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <nav class="site-menu">
     <div class="container menu-row">
@@ -8,10 +8,10 @@
             <spring:message code="menu.home"/>
         </a>
 
-        <c:if test="${sessionScope.user.admin}">
+        <sec:authorize access="authentication.principal.admin">
             <a href="${pageContext.request.contextPath}/users">
                 <spring:message code="menu.users"/>
             </a>
-        </c:if>
+        </sec:authorize>
     </div>
 </nav>

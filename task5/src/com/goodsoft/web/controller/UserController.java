@@ -1,11 +1,10 @@
 package com.goodsoft.web.controller;
 
 import com.goodsoft.model.User;
+import com.goodsoft.security.SecurityUtils;
 import com.goodsoft.service.UserService;
 import com.goodsoft.service.ValidationService;
 import com.goodsoft.web.form.DeleteUserForm;
-import com.goodsoft.web.util.CommonConstant;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
@@ -44,7 +43,6 @@ public class UserController {
     public String deleteUser(
             @Valid @ModelAttribute("deleteUserForm") DeleteUserForm deleteUserForm,
             BindingResult bindingResult,
-            HttpSession session,
             Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -53,9 +51,7 @@ public class UserController {
         }
 
         String login = deleteUserForm.getLogin();
-
-        User current = (User) session.getAttribute(CommonConstant.USER_KEY);
-        String currentLogin = current != null ? current.getLogin() : null;
+        String currentLogin = SecurityUtils.getCurrentUser().getLogin();
 
         validationService.validateDelete(login, currentLogin, bindingResult);
 
@@ -91,7 +87,6 @@ public class UserController {
     public String saveUser(
             @Valid @ModelAttribute("editUser") User user,
             BindingResult bindingResult,
-            HttpSession session,
             Model model) {
 
         String oldLogin = user.getOldLogin();
@@ -117,11 +112,6 @@ public class UserController {
                 user.setPassword(existing.getPassword());
             }
             userService.update(user);
-
-            User current = (User) session.getAttribute(CommonConstant.USER_KEY);
-            if (current != null && current.getLogin().equals(oldLogin)) {
-                session.setAttribute(CommonConstant.USER_KEY, user);
-            }
         }
 
         return "redirect:/users";

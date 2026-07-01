@@ -1,11 +1,10 @@
 package com.goodsoft.web.controller;
 
 import com.goodsoft.model.User;
+import com.goodsoft.security.SecurityUtils;
 import com.goodsoft.service.SecurityService;
 import com.goodsoft.web.form.ChangePasswordForm;
 import com.goodsoft.web.form.LoginForm;
-import com.goodsoft.web.util.CommonConstant;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,28 +33,6 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String processLogin(
-            @Valid @ModelAttribute("loginForm") LoginForm loginForm,
-            BindingResult bindingResult,
-            HttpSession session,
-            Model model) {
-
-        if (bindingResult.hasErrors()) {
-            return "login";
-        }
-
-        User user = securityService.login(loginForm.getLogin(), loginForm.getPassword());
-
-        if (user != null) {
-            session.setAttribute(CommonConstant.USER_KEY, user);
-            return "redirect:/welcome";
-        }
-
-        bindingResult.reject("error.login.invalid", msg("error.login.invalid"));
-        return "login";
-    }
-
     @GetMapping("/loginedit")
     public String showChangePasswordPage(Model model) {
         model.addAttribute("changePasswordForm", new ChangePasswordForm());
@@ -65,35 +42,23 @@ public class LoginController {
     @PostMapping("/loginedit")
     public String changePassword(
             @Valid @ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm,
-            BindingResult bindingResult,
-            HttpSession session,
-            Model model) {
+            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "loginedit";
         }
 
-        User user = (User) session.getAttribute(CommonConstant.USER_KEY);
+        User user = SecurityUtils.getCurrentUser();
 
         if (securityService.changePassword(
                 user,
                 changePasswordForm.getOldPassword(),
                 changePasswordForm.getNewPassword())) {
-
-            session.setAttribute(CommonConstant.USER_KEY, user);
             return "redirect:/welcome";
         }
 
         bindingResult.reject("error.password.invalid", msg("error.password.invalid"));
         return "loginedit";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-        return "redirect:/login";
     }
 
     private String msg(String code) {
