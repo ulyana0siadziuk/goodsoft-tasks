@@ -2,10 +2,13 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:myhtml title="Пользователи">
-    <h1>Список пользователей</h1>
+<spring:message code="users.title" var="pageTitle"/>
+
+<t:myhtml title="${pageTitle}">
+    <h1><spring:message code="users.heading"/></h1>
 
     <form:form modelAttribute="deleteUserForm"
                action="${pageContext.request.contextPath}/users"
@@ -14,19 +17,21 @@
     </form:form>
 
     <p>
-        <a class="btn" href="${pageContext.request.contextPath}/useredit">Добавить</a>
+        <a class="btn" href="${pageContext.request.contextPath}/useredit">
+            <spring:message code="users.add"/>
+        </a>
     </p>
 
     <table class="users-table">
         <thead>
         <tr>
-            <th>Логин</th>
-            <th>Имя</th>
-            <th>Возраст</th>
-            <th>Зарплата</th>
-            <th>Роли</th>
-            <th>Дата рождения</th>
-            <th>Действия</th>
+            <th><spring:message code="users.col.login"/></th>
+            <th><spring:message code="users.col.name"/></th>
+            <th><spring:message code="users.col.age"/></th>
+            <th><spring:message code="users.col.salary"/></th>
+            <th><spring:message code="users.col.roles"/></th>
+            <th><spring:message code="users.col.birthday"/></th>
+            <th><spring:message code="users.col.actions"/></th>
         </tr>
         </thead>
         <tbody>
@@ -42,17 +47,22 @@
                 </td>
                 <td class="actions">
                     <a href="${pageContext.request.contextPath}/useredit?login=${u.login}">
-                        Редактировать
+                        <spring:message code="users.edit"/>
                     </a>
+
+                    <spring:message code="users.delete.confirm"
+                                    arguments="${u.login}"
+                                    var="deleteConfirm"
+                                    javaScriptEscape="true"/>
 
                     <form:form modelAttribute="deleteUserForm"
                                action="${pageContext.request.contextPath}/users"
                                method="post"
-                               cssStyle="display:inline;">
+                               cssClass="inline-form">
                         <form:hidden path="login" value="${u.login}"/>
                         <button type="submit"
-                                onclick="return confirm('Удалить пользователя ${u.login}?');">
-                            Удалить
+                                onclick="return confirm('${deleteConfirm}');">
+                            <spring:message code="users.delete"/>
                         </button>
                     </form:form>
                 </td>

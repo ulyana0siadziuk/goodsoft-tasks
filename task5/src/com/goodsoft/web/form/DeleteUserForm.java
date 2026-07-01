@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class DeleteUserForm {
 
-    @NotBlank(message = "Логин не указан")
+    @NotBlank(message = "{validation.delete.login.required}")
     private String login;
 
     public String getLogin() {

@@ -8,6 +8,8 @@ import com.goodsoft.web.util.CommonConstant;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,11 +17,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Locale;
+
 @Controller
 public class LoginController {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/login")
     public String showLoginPage(Model model) {
@@ -45,7 +52,7 @@ public class LoginController {
             return "redirect:/welcome";
         }
 
-        bindingResult.reject("error.login", "Неверный логин или пароль");
+        bindingResult.reject("error.login.invalid", msg("error.login.invalid"));
         return "login";
     }
 
@@ -77,7 +84,7 @@ public class LoginController {
             return "redirect:/welcome";
         }
 
-        bindingResult.reject("error.password", "Неверный старый пароль");
+        bindingResult.reject("error.password.invalid", msg("error.password.invalid"));
         return "loginedit";
     }
 
@@ -87,5 +94,10 @@ public class LoginController {
             session.invalidate();
         }
         return "redirect:/login";
+    }
+
+    private String msg(String code) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, locale);
     }
 }

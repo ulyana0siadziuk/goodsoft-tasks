@@ -74,7 +74,9 @@ public class UserController {
             Model model) {
 
         if (login != null && !login.isBlank()) {
-            model.addAttribute("editUser", userService.findByLogin(login));
+            User user = userService.findByLogin(login);
+            user.setOldLogin(login);
+            model.addAttribute("editUser", user);
             model.addAttribute("editMode", true);
         } else {
             model.addAttribute("editUser", new User());
@@ -89,10 +91,10 @@ public class UserController {
     public String saveUser(
             @Valid @ModelAttribute("editUser") User user,
             BindingResult bindingResult,
-            @RequestParam(required = false) String oldLogin,
             HttpSession session,
             Model model) {
 
+        String oldLogin = user.getOldLogin();
         boolean isEdit = oldLogin != null && !oldLogin.isBlank();
 
         validationService.validateBusinessRules(user, isEdit, bindingResult);

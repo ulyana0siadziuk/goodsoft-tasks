@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public class ChangePasswordForm {
 
-    @NotBlank(message = "Старый пароль обязателен")
+    @NotBlank(message = "{validation.oldPassword.required}")
     private String oldPassword;
 
-    @NotBlank(message = "Новый пароль обязателен")
+    @NotBlank(message = "{validation.newPassword.required}")
     private String newPassword;
 
     public String getOldPassword() {

@@ -2,12 +2,15 @@ package com.goodsoft.service;
 
 import com.goodsoft.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ValidationService {
@@ -15,42 +18,45 @@ public class ValidationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     public void validateBusinessRules(User user, boolean isEdit, BindingResult bindingResult) {
         if (!isEdit && isBlank(user.getPassword())) {
-            bindingResult.rejectValue("password", "", "Пароль обязателен");
+            rejectValue(bindingResult, "password", "validation.password.required");
         }
 
         if (!isEdit && !isBlank(user.getLogin()) && userService.exists(user.getLogin())) {
-            bindingResult.rejectValue("login", "", "Пользователь с таким логином уже существует");
+            rejectValue(bindingResult, "login", "error.login.exists");
         }
 
         if (user.getBirthday() != null && user.getAge() != null) {
             int calculatedAge = Period.between(user.getBirthday(), LocalDate.now()).getYears();
             if (!user.getAge().equals(calculatedAge)) {
-                bindingResult.rejectValue("age", "", "Возраст не соответствует дате рождения");
+                rejectValue(bindingResult, "age", "error.age.mismatch");
             }
         }
 
         List<String> roles = user.getRoles();
         if (roles != null && roles.contains("ADMIN") && roles.contains("USER")) {
-            bindingResult.rejectValue("roles", "", "Роли USER и ADMIN нельзя выбирать одновременно");
+            rejectValue(bindingResult, "roles", "error.roles.admin.user");
         }
     }
 
     public void validateDelete(String login, String currentLogin, BindingResult bindingResult) {
         User user = userService.findByLogin(login);
         if (user == null) {
-            bindingResult.reject("error.delete", "Пользователь не найден");
+            reject(bindingResult, "error.delete.notFound");
             return;
         }
 
         if (login.equals(currentLogin)) {
-            bindingResult.reject("error.delete", "Нельзя удалить самого себя");
+            reject(bindingResult, "error.delete.self");
             return;
         }
 
         if (user.isAdmin() && userService.countAdmins() <= 1) {
-            bindingResult.reject("error.delete", "Нельзя удалить последнего администратора");
+            reject(bindingResult, "error.delete.lastAdmin");
         }
     }
 
@@ -61,16 +67,28 @@ public class ValidationService {
 
         User existing = userService.findByLogin(oldLogin);
         if (existing == null) {
-            bindingResult.rejectValue("roles", "", "Пользователь не найден");
+            rejectValue(bindingResult, "roles", "error.user.notFound");
             return;
         }
 
         if (existing.isAdmin()
                 && !user.isAdmin()
                 && userService.countAdmins() <= 1) {
-            bindingResult.rejectValue("roles", "",
-                    "Нельзя снять роль администратора у последнего администратора");
+            rejectValue(bindingResult, "roles", "error.roles.lastAdmin");
         }
+    }
+
+    private void rejectValue(BindingResult bindingResult, String field, String code) {
+        bindingResult.rejectValue(field, code, msg(code));
+    }
+
+    private void reject(BindingResult bindingResult, String code) {
+        bindingResult.reject(code, msg(code));
+    }
+
+    private String msg(String code) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, locale);
     }
 
     private boolean isBlank(String value) {

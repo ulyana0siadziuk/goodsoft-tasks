@@ -3,9 +3,9 @@ package com.goodsoft.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import org.springframework.format.annotation.DateTimeFormat;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -16,28 +16,30 @@ import java.util.List;
 public class User {
     private Integer id;
 
-    @NotBlank(message = "Логин обязателен")
+    @NotBlank(message = "{validation.login.required}")
     private String login;
+
+    private String oldLogin;
 
     private String password;
 
-    @NotBlank(message = "Имя обязательно")
+    @NotBlank(message = "{user.name.required}")
     private String name;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @NotNull(message = "Дата рождения обязательна")
-    @PastOrPresent(message = "Дата рождения не может быть в будущем")
+    @NotNull(message = "{user.birthday.required}")
+    @PastOrPresent(message = "{user.birthday.future}")
     private LocalDate birthday;
 
-    @NotNull(message = "Возраст обязателен")
-    @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
+    @NotNull(message = "{user.age.required}")
+    @Min(value = 18, message = "{user.age.min}")
     private Integer age;
 
-    @NotNull(message = "Зарплата обязательна")
-    @Min(value = 0, message = "Зарплата не может быть отрицательной")
+    @NotNull(message = "{user.salary.required}")
+    @Min(value = 0, message = "{user.salary.min}")
     private Integer salary;
 
-    @NotEmpty(message = "Выберите хотя бы одну роль")
+    @NotEmpty(message = "{user.roles.required}")
     private List<String> roles = new ArrayList<>();
 
     public User() {
@@ -57,6 +59,14 @@ public class User {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getOldLogin() {
+        return oldLogin;
+    }
+
+    public void setOldLogin(String oldLogin) {
+        this.oldLogin = oldLogin;
     }
 
     public String getPassword() {
