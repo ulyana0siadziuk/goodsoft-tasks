@@ -1,16 +1,14 @@
 <%@ tag pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <header class="site-header">
     <div class="container header-row">
         <div class="logo-box">LOGO</div>
 
         <div class="header-user">
-            <div class="lang-switcher">
-                <a href="?lang=ru" title="Русский">RU</a>
-                <a href="?lang=en" title="English">EN</a>
-            </div>
+            <t:langSwitcher/>
 
             <span>
                 <spring:message code="header.hello"/>

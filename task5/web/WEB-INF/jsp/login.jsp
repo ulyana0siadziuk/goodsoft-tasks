@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,10 +11,7 @@
 </head>
 <body class="standalone-page">
 
-<div class="lang-switcher">
-    <a href="?lang=ru">RU</a>
-    <a href="?lang=en">EN</a>
-</div>
+<t:langSwitcher/>
 
 <h1><spring:message code="login.heading"/></h1>
 
